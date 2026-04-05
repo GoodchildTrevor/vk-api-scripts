@@ -94,9 +94,9 @@ def get_text_posts(domain, count, token, limit=None):
 
 all_posts = get_text_posts(group_domain, count=100, token=access_token, limit=None)
 raw_df = pd.DataFrame(all_posts)
-raw_df.loc[:, "date"] = pd.to_datetime(raw_df["date"], unit="s")
+raw_df["date"] = pd.to_datetime(raw_df["date"].astype("int64"), unit="s")
 df = raw_df.drop(columns=["owner_id", "attachments"])
 
-df.to_excel("posts.xlsx", index=False)
+df.to_excel("posts.xlsx", index=False, engine="openpyxl")
 
 print("Файл posts.xlsx успешно создан!")
