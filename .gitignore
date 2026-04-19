@@ -2,9 +2,14 @@
 *.xlsx
 
 .vscode/
+.idea/
 
 *.pyc
 __pycache__/
 
 logs/
 *.log
+
+# Virtual environments
+.venv/
+venv/

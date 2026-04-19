@@ -1,0 +1,15 @@
+from pydantic import BaseModel
+
+
+class Document(BaseModel):
+    id: int = 0
+    title: str = ""
+    ext: str = ""
+    date: int = 0
+    url: str = ""
+    tags: list[str] | str = ""
+
+
+class FilesResponse(BaseModel):
+    items: list[dict]
+    count: int
