@@ -10,4 +10,4 @@ class GroupInfo(BaseModel):
 
 
 class GroupResponse(BaseModel):
-    group: dict
+    group: GroupInfo

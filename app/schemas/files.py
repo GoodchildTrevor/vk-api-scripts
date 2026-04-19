@@ -11,5 +11,5 @@ class Document(BaseModel):
 
 
 class FilesResponse(BaseModel):
-    items: list[dict]
+    items: list[Document]
     count: int

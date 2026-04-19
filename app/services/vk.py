@@ -101,10 +101,10 @@ async def get_text_posts(
                     continue
 
                 post_data: dict = {
-                    "owner_id": post.get("owner_id", ""),
-                    "post_id": post.get("id", ""),
+                    "owner_id": post.get("owner_id", 0),
+                    "post_id": post.get("id", 0),
                     "text": text,
-                    "date": post.get("date", ""),
+                    "date": post.get("date", 0),
                     "likes": post.get("likes", {}).get("count", 0),
                     "reposts": post.get("reposts", {}).get("count", 0),
                     "views": post.get("views", {}).get("count", 0),
@@ -117,7 +117,7 @@ async def get_text_posts(
                         )
                     elif att["type"] == "doc":
                         post_data["doc_url"] = att["doc"].get("url", "")
-                        post_data["doc_id"] = att["doc"].get("id", "")
+                        post_data["doc_id"] = att["doc"].get("id")
                         post_data["doc_title"] = att["doc"].get("title", "")
                         post_data["doc_ext"] = att["doc"].get("ext", "")
 
