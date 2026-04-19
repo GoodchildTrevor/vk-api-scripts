@@ -1,5 +1,4 @@
 import asyncio
-import re
 
 import httpx
 
@@ -30,8 +29,11 @@ async def _vk_get(client: httpx.AsyncClient, method: str, params: dict) -> dict:
 
 def extract_domain(group_link: str) -> str:
     """Extract domain/screen_name from a VK group URL or return as-is."""
-    match = re.search(r"[^/]+$", group_link)
-    return match.group(0) if match else group_link
+    # Use rsplit to avoid regex on user input (prevents ReDoS).
+    stripped = group_link.rstrip("/")
+    if "/" in stripped:
+        return stripped.rsplit("/", 1)[-1]
+    return stripped
 
 
 async def get_group_info(group_id: str) -> dict:

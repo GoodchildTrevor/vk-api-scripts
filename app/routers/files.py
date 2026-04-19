@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, HTTPException, Query
 
 from app.services.vk import get_file_list_with_tags, get_group_id
 
@@ -18,6 +18,6 @@ async def files_get(
     """
     group_id = await get_group_id(domain)
     if group_id == 0:
-        return {"items": [], "count": 0, "error": "Group not found"}
+        raise HTTPException(status_code=404, detail="Group not found")
     docs = await get_file_list_with_tags(group_id, count=count, limit=limit)
     return {"items": docs, "count": len(docs)}

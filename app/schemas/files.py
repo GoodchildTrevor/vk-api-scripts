@@ -7,7 +7,7 @@ class Document(BaseModel):
     ext: str = ""
     date: int = 0
     url: str = ""
-    tags: list[str] | str = ""
+    tags: list[str] = []
 
 
 class FilesResponse(BaseModel):
