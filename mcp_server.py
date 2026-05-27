@@ -1,7 +1,9 @@
 """MCP (Model Context Protocol) server exposing VK API tools for AI agents."""
 
+import httpx
 from mcp.server.fastmcp import FastMCP
 
+from app.exceptions import VKAPIError
 from app.services.vk import get_file_list_with_tags, get_group_id, get_group_info, get_text_posts
 
 mcp = FastMCP("VK API")
@@ -15,7 +17,12 @@ async def vk_get_wall_posts(domain: str, limit: int = 50) -> list[dict]:
         domain: VK community screen name, e.g. "durov".
         limit: Maximum number of posts to return.
     """
-    return await get_text_posts(domain, count=100, limit=limit)
+    try:
+        return await get_text_posts(domain, count=100, limit=limit)
+    except VKAPIError as e:
+        return [{"error": e.message, "code": e.code}]
+    except httpx.HTTPError as e:
+        return [{"error": f"Network error: {e}"}]
 
 
 @mcp.tool()
@@ -25,7 +32,12 @@ async def vk_get_group_info(group_id: str) -> dict:
     Args:
         group_id: Numeric id or screen_name of the VK group.
     """
-    return await get_group_info(group_id)
+    try:
+        return await get_group_info(group_id)
+    except VKAPIError as e:
+        return {"error": e.message, "code": e.code}
+    except httpx.HTTPError as e:
+        return {"error": f"Network error: {e}"}
 
 
 @mcp.tool()
@@ -36,10 +48,15 @@ async def vk_get_files(domain: str, limit: int = 100) -> list[dict]:
         domain: VK community screen name or URL.
         limit: Maximum number of documents to return.
     """
-    gid = await get_group_id(domain)
-    if gid == 0:
-        return []
-    return await get_file_list_with_tags(gid, count=200, limit=limit)
+    try:
+        gid = await get_group_id(domain)
+        if gid == 0:
+            return []
+        return await get_file_list_with_tags(gid, count=200, limit=limit)
+    except VKAPIError as e:
+        return [{"error": e.message, "code": e.code}]
+    except httpx.HTTPError as e:
+        return [{"error": f"Network error: {e}"}]
 
 
 if __name__ == "__main__":

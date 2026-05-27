@@ -3,6 +3,7 @@ import asyncio
 import httpx
 
 from app.config import get_settings
+from app.exceptions import VKAPIError
 
 
 def _settings():
@@ -21,7 +22,11 @@ async def _vk_get(client: httpx.AsyncClient, method: str, params: dict) -> dict:
     all_params = {**_base_params(), **params}
     resp = await client.get(url, params=all_params)
     resp.raise_for_status()
-    return resp.json()
+    body = resp.json()
+    if "error" in body:
+        err = body["error"]
+        raise VKAPIError(err.get("error_code", 0), err.get("error_msg", "unknown"))
+    return body
 
 
 # ── Group helpers ──────────────────────────────────────────────
